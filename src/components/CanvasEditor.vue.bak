@@ -1,7 +1,19 @@
 <template>
   <div class="canvas-container">
     <div class="canvas-panel">
-      
+      <v-stage ref="stageRef" :config="stageSize">
+        <v-layer ref="layer">
+          <!-- <v-circle :config="circleConfig" /> -->
+          <v-image :config="{
+            x: 200,
+            y: 50,
+            image: vaderImage,
+            scaleX: 0.5,
+            scaleY: 0.5,
+            cornerRadius: 20
+          }" />
+        </v-layer>
+      </v-stage>
     </div>
     <div class="custom-panel">
       <n-space>
@@ -25,7 +37,23 @@ import { NButton, NSpace, NUpload } from "naive-ui"
 import { useImage } from 'vue-konva';
 import * as exif from "fast-exif"
 
-// let vaderImage:any = useImage('https://konvajs.org/assets/yoda.jpg')[0]
+const stageSize = {
+  width: document.documentElement.clientWidth * 0.4,
+  height: document.documentElement.clientWidth * 0.35
+};
+
+
+
+const stageRef: any = ref(null)
+
+let vaderImage:any = useImage('https://konvajs.org/assets/yoda.jpg')[0]
+
+const circleConfig = {
+  x: 50,
+  y: 50,
+  radius: 20,
+  fill: "red",
+}
 
 const handleUpload = (file: any) => {
   let reader = new FileReader();
@@ -38,7 +66,10 @@ const handleUpload = (file: any) => {
 
       img.onload = ()=>{
         console.log(img)
+        vaderImage = useImage('https://konvajs.org/assets/darth-vader.jpg')[0]
+        console.log(vaderImage)
       }
+
       img.src = reader.result;
     }
   }
@@ -51,6 +82,19 @@ const handleUpload = (file: any) => {
 }
 
 const handleExport = () => {
+  // get data URL with default settings
+  const dataURL = stageRef.value.getNode().toDataURL();
+
+  // open in new window
+  const win: any = window.open();
+  win.document.write(`<img src="${dataURL}" alt="Stage"/>`);
+
+  // you can also save with different settings
+  const jpegURL = stageRef.value.getNode().toDataURL({
+    mimeType: 'image/jpeg',
+    quality: 0.8
+  });
+  console.log('JPEG URL:', jpegURL);
 };
 
 onMounted(() => {
