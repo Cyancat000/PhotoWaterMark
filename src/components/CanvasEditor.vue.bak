@@ -3,7 +3,7 @@
     <div class="canvas-panel">
       <v-stage ref="stageRef" :config="stageSize">
         <v-layer ref="layer">
-          <!-- <v-circle :config="circleConfig" /> -->
+          <v-circle :config="circleConfig" />
           <v-image :config="{
             x: 200,
             y: 50,
@@ -32,7 +32,7 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, reactive, onMounted } from "vue"
 import { NButton, NSpace, NUpload } from "naive-ui"
 import { useImage } from 'vue-konva';
 import * as exif from "fast-exif"
@@ -46,7 +46,12 @@ const stageSize = {
 
 const stageRef: any = ref(null)
 
-let vaderImage:any = useImage('https://konvajs.org/assets/yoda.jpg')[0]
+const layer = ref(null)
+
+console.log(layer.add)
+
+var vaderImage = reactive(useImage('https://konvajs.org/assets/yoda.jpg')[0])
+
 
 const circleConfig = {
   x: 50,
@@ -65,8 +70,8 @@ const handleUpload = (file: any) => {
       const img = new Image()
 
       img.onload = ()=>{
-        console.log(img)
-        vaderImage = useImage('https://konvajs.org/assets/darth-vader.jpg')[0]
+        var vaderImage = useImage('https://konvajs.org/assets/darth-vader.jpg')[0]
+        // 但是当我的图片上传完成之执行同样的JS语句却失效了，并且经测试下面的console.log是被执行的。
         console.log(vaderImage)
       }
 
@@ -77,7 +82,6 @@ const handleUpload = (file: any) => {
   reader.onerror = function () {
     console.log(reader.error);
   };
-
 
 }
 
