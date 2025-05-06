@@ -20,7 +20,7 @@
 
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue"
+import { onMounted } from "vue"
 import { NButton, NSpace, NUpload } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
@@ -32,47 +32,41 @@ console.log("exif输出", exifr)
 
 let imageObj: HTMLImageElement
 let stage: any
+let photo: any
+let canvasLimit:number = document.documentElement.clientWidth * 0.4
+console.log("宽高限制: ", canvasLimit)
+let photoScale:number
 
-// 逻辑执行
+// Logic Part
 
 onMounted(() => {
 
-  // 创建舞台
+  // Create Stage
   stage = new Konva.Stage({
     container: 'PhotoViewer', // id of container <div>
-    width: document.documentElement.clientWidth * 0.4,
-    height: document.documentElement.clientWidth * 0.4,
+    width: canvasLimit,
+    height: canvasLimit,
   });
 
   console.log(stage)
 
-  // 创建并添加图层
+  // Create Layer
   var layer = new Konva.Layer();
   stage.add(layer);
 
-  var circle = new Konva.Circle({
-    x: stage.width() / 2,
-    y: stage.height() / 2,
-    radius: 70,
-    fill: 'red',
-    stroke: 'black',
-    strokeWidth: 4,
-  });
-  layer.add(circle);
-
+  // Create Image
   imageObj = new Image();
   imageObj.onload = function () {
-    const yoda = new Konva.Image({
-      x: 50,
-      y: 50,
+    photo = new Konva.Image({
+      x: 0,
+      y: 0,
       image: imageObj,
-      width: 106,
-      height: 118
+      width: 50,
+      height: 50
     });
 
-    layer.add(yoda);
+    layer.add(photo);
   };
-  imageObj.src = 'https://konvajs.org/assets/yoda.jpg';
 });
 
 // Handles Declaration Part
@@ -84,25 +78,36 @@ const handleUpload = (file: any) => {
   reader.onload = function () {
     if (typeof (reader.result) == 'string') {
       imageObj.src = reader.result
-      exifr.parse(reader.result, true)
-        .then(output => console.log(output))
+      exifr.parse(reader.result, true).then(output => console.log("EXIF: ", output))
+
+      // 计算并重设图像宽高
+      const img = new Image()
+      img.onload = () => {
+        console.log("图像宽高: ", img.naturalWidth, img.naturalHeight)
+        photoScale = Math.min(canvasLimit/img.naturalWidth, canvasLimit/img.naturalHeight)
+        stage.scale({x:photoScale, y:photoScale})
+        photo.width(img.naturalWidth)
+        photo.height(img.naturalHeight)
+        photo.move({x:(canvasLimit/photoScale-img.naturalWidth)/2, y:(canvasLimit/photoScale-img.naturalHeight)/2})
+        console.log("舞台宽高: ", stage.width(), stage.height())
+      }
+      img.src = reader.result
     } else {
-      // 待办: 上传失败的用户感知
+      // todo: 上传失败的用户感知
     }
   }
 
   reader.onerror = function () {
-    // 待办: 上传失败的用户感知
+    // todo: 上传失败的用户感知
     console.log(reader.error);
   };
 }
 
 const handleExport = () => {
   const dataURL = stage.toDataURL({
-    pixelRatio: 4 // double resolution
+    pixelRatio: 6 // double resolution
   });
 
-  // 下载
   const link = document.createElement('a');
   link.download = 'stage.png';
   link.href = dataURL;
@@ -121,7 +126,7 @@ const handleExport = () => {
 .canvas-container {
   width: 80vw;
   height: 40vw;
-  background: #8888;
+  background: #3333;
   display: flex;
 }
 
