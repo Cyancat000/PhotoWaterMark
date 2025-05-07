@@ -13,6 +13,7 @@
         <n-button @click="handleExport" type="primary">
           下载图片
         </n-button>
+        <n-code :code="JSON.stringify(exifInfo)" word-wrap></n-code>
       </n-space>
     </div>
   </div>
@@ -20,22 +21,29 @@
 
 
 <script setup lang="ts">
-import { onMounted } from "vue"
-import { NButton, NSpace, NUpload } from "naive-ui"
+import { reactive, onMounted } from "vue"
+import { NButton, NSpace, NUpload, NCode } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
 
 
 // Object Declaration Part
-console.log("Konva输出", Konva)
-console.log("exif输出", exifr)
-
 let imageObj: HTMLImageElement
 let stage: any
 let photo: any
-let canvasLimit:number = document.documentElement.clientWidth * 0.4
-console.log("宽高限制: ", canvasLimit)
-let photoScale:number
+let canvasLimit: number = document.documentElement.clientWidth * 0.4
+let photoScale: number
+let exifInfo: {
+  iso?: number,
+  exposure?: number,
+  f?: number,
+  focal?: number,
+  latitude?: number,
+  longitude?: number,
+  brand?: string,
+  model?: string,
+  time?: Date
+} = reactive({})
 
 // Logic Part
 
@@ -50,9 +58,9 @@ onMounted(() => {
 
   console.log(stage)
 
-  // Create Layer
-  var layer = new Konva.Layer();
-  stage.add(layer);
+  // Create Photo Layer
+  var photoLayer = new Konva.Layer();
+  stage.add(photoLayer);
 
   // Create Image
   imageObj = new Image();
@@ -64,8 +72,7 @@ onMounted(() => {
       width: 50,
       height: 50
     });
-
-    layer.add(photo);
+    photoLayer.add(photo);
   };
 });
 
@@ -78,22 +85,43 @@ const handleUpload = (file: any) => {
   reader.onload = function () {
     if (typeof (reader.result) == 'string') {
       imageObj.src = reader.result
-      exifr.parse(reader.result, true).then(output => console.log("EXIF: ", output))
+      // 读取EXIF信息
+      exifr.parse(reader.result).then(output => {
+        Object.assign(exifInfo, {
+          iso: output.ISO,
+          exposure: 1/output.ExposureTime,
+          f: output.FNumber,
+          focal: output.FocalLength,
+          latitude: output.latitude,
+          longitude: output.longitude,
+          brand: output.Make,
+          model: output.Model,
+          time: output.DateTimeOriginal
+        })
+        console.log("EXIF: ", exifInfo)
+      })
 
-      // 计算并重设图像宽高
+
+      // 渲染照片与相框
       const img = new Image()
       img.onload = () => {
         console.log("图像宽高: ", img.naturalWidth, img.naturalHeight)
-        photoScale = Math.min(canvasLimit/img.naturalWidth, canvasLimit/img.naturalHeight)
-        stage.scale({x:photoScale, y:photoScale})
+
+        // 计算并使用自适应缩放
+        photoScale = Math.min(canvasLimit / img.naturalWidth, canvasLimit / img.naturalHeight)
+        stage.scale({ x: photoScale, y: photoScale })
+        // 以照片分辨率设置元素宽高
         photo.width(img.naturalWidth)
         photo.height(img.naturalHeight)
-        photo.move({x:(canvasLimit/photoScale-img.naturalWidth)/2, y:(canvasLimit/photoScale-img.naturalHeight)/2})
+        // 居中照片
+        photo.move({ x: (canvasLimit / photoScale - img.naturalWidth) / 2, y: (canvasLimit / photoScale - img.naturalHeight) / 2 })
         console.log("舞台宽高: ", stage.width(), stage.height())
+        handleCreateFrame()
       }
       img.src = reader.result
+
     } else {
-      // todo: 上传失败的用户感知
+      // todo: 上传成功读取失败的用户感知
     }
   }
 
@@ -116,6 +144,23 @@ const handleExport = () => {
   document.body.removeChild(link);
 
 };
+
+const handleCreateFrame = () => {
+  // Create Frame Layer
+  var frameLayer = new Konva.Layer()
+  stage.add(frameLayer)
+
+  // Create Frame
+  const frameBackground = new Konva.Rect({
+    x: 0,
+    y: photo.y(),
+    width: photo.width(),
+    height: photo.height() * 1.1,
+    fill: "white",
+  })
+  frameLayer.moveDown()
+  frameLayer.add(frameBackground)
+}
 
 
 
