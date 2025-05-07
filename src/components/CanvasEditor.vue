@@ -27,7 +27,7 @@ import exifr from "exifr"
 import Konva from 'konva';
 
 
-// Object Declaration Part
+// Object Declaration & Definition Section
 let imageObj: HTMLImageElement
 let stage: any
 let photo: any
@@ -45,13 +45,13 @@ let exifInfo: {
   time?: Date
 } = reactive({})
 
-// Logic Part
+// Main Logic Section
 
 onMounted(() => {
 
   // Create Stage
   stage = new Konva.Stage({
-    container: 'PhotoViewer', // id of container <div>
+    container: 'PhotoViewer', 
     width: canvasLimit,
     height: canvasLimit,
   });
@@ -76,7 +76,7 @@ onMounted(() => {
   };
 });
 
-// Handles Declaration Part
+// Handles Definition Part
 const handleUpload = (file: any) => {
 
   let reader = new FileReader();
@@ -85,7 +85,7 @@ const handleUpload = (file: any) => {
   reader.onload = function () {
     if (typeof (reader.result) == 'string') {
       imageObj.src = reader.result
-      // 读取EXIF信息
+      // Read Photo Exif Information
       exifr.parse(reader.result).then(output => {
         Object.assign(exifInfo, {
           iso: output.ISO,
@@ -102,7 +102,7 @@ const handleUpload = (file: any) => {
       })
 
 
-      // 渲染照片与相框
+      // Render Photo & Frame
       const img = new Image()
       img.onload = () => {
         console.log("图像宽高: ", img.naturalWidth, img.naturalHeight)
@@ -133,7 +133,7 @@ const handleUpload = (file: any) => {
 
 const handleExport = () => {
   const dataURL = stage.toDataURL({
-    pixelRatio: 6 // double resolution
+    pixelRatio: 6
   });
 
   const link = document.createElement('a');
