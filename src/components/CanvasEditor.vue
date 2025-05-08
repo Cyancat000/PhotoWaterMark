@@ -5,7 +5,7 @@
     </div>
     <div class="custom-panel">
       <n-space>
-        <n-upload accept="image/*" @change="handleUpload">
+        <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader">
           <n-button type="primary">
             上传图片
           </n-button>
@@ -21,7 +21,7 @@
 
 
 <script setup lang="ts">
-import { reactive, onMounted } from "vue"
+import { ref, reactive, onMounted } from "vue"
 import { NButton, NSpace, NUpload, NCode } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
@@ -47,6 +47,7 @@ let photo: any
 let canvasLimit: number = document.documentElement.clientWidth * 0.4
 let photoScale: number
 const exifInfo: exifInfo = reactive({})
+let uploader = ref()
 
 // Main Logic Section
 
@@ -79,7 +80,7 @@ onMounted(() => {
 
 // Handles Definition Part
 const handleUpload = (file: any) => {
-
+  
   let reader = new FileReader();
   reader.readAsDataURL(file.file.file);
   console.log(file);
@@ -162,6 +163,10 @@ const handleCreateFrame = () => {
   })
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
+}
+
+const handleCleanStage = () => {
+  uploader.value.clear()
 }
 
 
