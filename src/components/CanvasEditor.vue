@@ -27,13 +27,8 @@ import exifr from "exifr"
 import Konva from 'konva';
 
 
-// Object Declaration & Definition Section
-let imageObj: HTMLImageElement
-let stage: any
-let photo: any
-let canvasLimit: number = document.documentElement.clientWidth * 0.4
-let photoScale: number
-let exifInfo: {
+// Type Const
+interface exifInfo {
   iso?: number,
   exposure?: number,
   f?: number,
@@ -43,7 +38,15 @@ let exifInfo: {
   brand?: string,
   model?: string,
   time?: Date
-} = reactive({})
+}
+
+// Object Declaration & Definition Section
+let imageObj: HTMLImageElement
+let stage: any
+let photo: any
+let canvasLimit: number = document.documentElement.clientWidth * 0.4
+let photoScale: number
+let exifInfo: exifInfo = reactive({})
 
 // Main Logic Section
 
