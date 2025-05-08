@@ -5,7 +5,7 @@
     </div>
     <div class="custom-panel">
       <n-space>
-        <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader">
+        <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader" :show-file-list="false">
           <n-button type="primary">
             上传图片
           </n-button>
@@ -92,7 +92,7 @@ const handleUpload = (file: any) => {
       img.onload = () => {
         console.log("图像宽高: ", img.naturalWidth, img.naturalHeight)
 
-        //创建照片
+        // Render Photo
         const photoLayer = new Konva.Layer();
         stage.add(photoLayer);
 
@@ -114,7 +114,7 @@ const handleUpload = (file: any) => {
         // 居中照片
         photo.move({ x: (canvasLimit / photoScale - img.naturalWidth) / 2, y: (canvasLimit / photoScale - img.naturalHeight) / 2 })
         console.log("舞台宽高: ", stage.width(), stage.height())
-        handleCreateFrame()
+        createFrameLayer()
       }
       img.src = reader.result
 
@@ -143,7 +143,7 @@ const handleExport = () => {
 
 };
 
-const handleCreateFrame = () => {
+const createFrameLayer = () => {
   // Create Frame Layer
   const frameLayer = new Konva.Layer()
   stage.add(frameLayer)
@@ -162,6 +162,7 @@ const handleCreateFrame = () => {
 
 const handleCleanStage = () => {
   uploader.value.clear()
+  stage.destroyChildren()
 }
 
 
