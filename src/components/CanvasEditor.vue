@@ -41,7 +41,6 @@ interface exifInfo {
 }
 
 // Object Declaration & Definition Section
-let imageObj: HTMLImageElement
 let stage: any
 let photo: any
 let canvasLimit: number = document.documentElement.clientWidth * 0.4
@@ -60,27 +59,12 @@ onMounted(() => {
     height: canvasLimit,
   });
 
-  // Create Photo Layer
-  const photoLayer = new Konva.Layer();
-  stage.add(photoLayer);
 
-  // Create Image Element Proxy
-  imageObj = new Image();
-  imageObj.onload = function () {
-    photo = new Konva.Image({
-      x: 0,
-      y: 0,
-      image: imageObj,
-      width: 50,
-      height: 50
-    });
-    photoLayer.add(photo);
-  };
 });
 
 // Handles Definition Part
 const handleUpload = (file: any) => {
-  
+
   let reader = new FileReader();
   reader.readAsDataURL(file.file.file);
   console.log(file);
@@ -103,12 +87,23 @@ const handleUpload = (file: any) => {
         console.log("EXIF: ", exifInfo)
       })
 
-      imageObj.src = reader.result
-
       // Render Photo & Frame
       const img = new Image()
       img.onload = () => {
         console.log("图像宽高: ", img.naturalWidth, img.naturalHeight)
+
+        //创建照片
+        const photoLayer = new Konva.Layer();
+        stage.add(photoLayer);
+
+        photo = new Konva.Image({
+          x: 0,
+          y: 0,
+          image: img,
+          width: 50,
+          height: 50
+        });
+        photoLayer.add(photo);
 
         // 计算并使用自适应缩放
         photoScale = Math.min(canvasLimit / img.naturalWidth, canvasLimit / img.naturalHeight)
