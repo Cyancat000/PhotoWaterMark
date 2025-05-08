@@ -46,7 +46,7 @@ let stage: any
 let photo: any
 let canvasLimit: number = document.documentElement.clientWidth * 0.4
 let photoScale: number
-let exifInfo: exifInfo = reactive({})
+const exifInfo: exifInfo = reactive({})
 
 // Main Logic Section
 
@@ -54,15 +54,13 @@ onMounted(() => {
 
   // Create Stage
   stage = new Konva.Stage({
-    container: 'PhotoViewer', 
+    container: 'PhotoViewer',
     width: canvasLimit,
     height: canvasLimit,
   });
 
-  console.log(stage)
-
   // Create Photo Layer
-  var photoLayer = new Konva.Layer();
+  const photoLayer = new Konva.Layer();
   stage.add(photoLayer);
 
   // Create Image
@@ -92,7 +90,7 @@ const handleUpload = (file: any) => {
       exifr.parse(reader.result).then(output => {
         Object.assign(exifInfo, {
           iso: output.ISO,
-          exposure: 1/output.ExposureTime,
+          exposure: 1 / output.ExposureTime,
           f: output.FNumber,
           focal: output.FocalLength,
           latitude: output.latitude,
@@ -150,7 +148,7 @@ const handleExport = () => {
 
 const handleCreateFrame = () => {
   // Create Frame Layer
-  var frameLayer = new Konva.Layer()
+  const frameLayer = new Konva.Layer()
   stage.add(frameLayer)
 
   // Create Frame
