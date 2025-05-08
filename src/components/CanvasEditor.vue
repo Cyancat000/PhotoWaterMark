@@ -63,7 +63,7 @@ onMounted(() => {
   const photoLayer = new Konva.Layer();
   stage.add(photoLayer);
 
-  // Create Image
+  // Create Image Element Proxy
   imageObj = new Image();
   imageObj.onload = function () {
     photo = new Konva.Image({
@@ -82,10 +82,10 @@ const handleUpload = (file: any) => {
 
   let reader = new FileReader();
   reader.readAsDataURL(file.file.file);
+  console.log(file);
 
   reader.onload = function () {
     if (typeof (reader.result) == 'string') {
-      imageObj.src = reader.result
       // Read Photo Exif Information
       exifr.parse(reader.result).then(output => {
         Object.assign(exifInfo, {
@@ -102,6 +102,7 @@ const handleUpload = (file: any) => {
         console.log("EXIF: ", exifInfo)
       })
 
+      imageObj.src = reader.result
 
       // Render Photo & Frame
       const img = new Image()
