@@ -4,17 +4,34 @@
       <div id='PhotoViewer'></div>
     </div>
     <div class="custom-panel">
-      <n-space>
-        <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader" :show-file-list="false">
-          <n-button type="primary">
-            上传图片
+      <n-space vertical>
+        <n-space>
+          <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader" :show-file-list="false">
+            <n-button type="primary">
+              上传图片
+            </n-button>
+          </n-upload>
+          <n-button @click="handleExport" type="primary">
+            下载图片
           </n-button>
-        </n-upload>
-        <n-button @click="handleExport" type="primary">
-          下载图片
-        </n-button>
-        <n-code :code="JSON.stringify(exifInfo)" word-wrap></n-code>
+
+        </n-space>
+        <n-card title="EXIF" size="small">{{ JSON.stringify(exifInfo) }}</n-card>
+        <n-input placeholder="焦段" v-model:value="exifInfo.focal">
+          <template #suffix>mm</template>
+        </n-input>
+        <n-input placeholder="光圈" v-model:value="exifInfo.f">
+          <template #prefix>f/</template>
+        </n-input>
+        <n-input placeholder="曝光时间" v-model:value="exifInfo.exposure">
+          <template #prefix>1/</template>
+          <template #suffix>s</template>
+        </n-input>
+        <n-input placeholder="ISO" v-model:value="exifInfo.iso">
+          <template #prefix>ISO</template>
+        </n-input>
       </n-space>
+
     </div>
   </div>
 </template>
@@ -22,17 +39,17 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue"
-import { NButton, NSpace, NUpload, NCode } from "naive-ui"
+import { NButton, NSpace, NUpload, NCard, NInput } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
 
 
 // Type Const
 interface exifInfo {
-  iso?: number,
-  exposure?: number,
-  f?: number,
-  focal?: number,
+  iso?: string,
+  exposure?: string,
+  f?: string,
+  focal?: string,
   latitude?: number,
   longitude?: number,
   brand?: string,
@@ -75,7 +92,7 @@ const handleUpload = (file: any) => {
       exifr.parse(reader.result).then(output => {
         Object.assign(exifInfo, {
           iso: output.ISO,
-          exposure: 1 / output.ExposureTime,
+          exposure: Math.round(1 / output.ExposureTime),
           f: output.FNumber,
           focal: output.FocalLength,
           latitude: output.latitude,
@@ -182,6 +199,8 @@ const handleCleanStage = () => {
   width: 40vw;
   height: 40vw;
   background-color: aquamarine;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .canvas-panel {
