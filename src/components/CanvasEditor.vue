@@ -17,7 +17,6 @@
           </n-button>
 
         </n-space>
-        <n-card title="EXIF" size="small">{{ JSON.stringify(exifInfo) }}</n-card>
         <n-flex class="paramForm">
           <n-input placeholder="焦段" v-model:value="exifInfo.focal">
             <template #suffix>mm</template>
@@ -32,6 +31,12 @@
           <n-input placeholder="ISO" v-model:value="exifInfo.iso">
             <template #prefix>ISO</template>
           </n-input>
+          <n-input placeholder="品牌" v-model:value="exifInfo.brand"/>
+          <n-input placeholder="型号" v-model:value="exifInfo.model"/>
+          <n-input placeholder="经度" v-model:value="exifInfo.longitude"/>
+          <n-input placeholder="纬度" v-model:value="exifInfo.latitude"/>
+          <n-input placeholder="日期" v-model:value="exifInfo.date"/>
+          <n-input placeholder="时间" v-model:value="exifInfo.time"/>
         </n-flex>
       </n-space>
 
@@ -42,7 +47,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue"
-import { NButton, NSpace, NUpload, NCard, NInput, NFlex } from "naive-ui"
+import { NButton, NSpace, NUpload, NInput, NFlex } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
 
@@ -53,11 +58,12 @@ interface exifInfo {
   exposure?: string,
   f?: string,
   focal?: string,
-  latitude?: number,
-  longitude?: number,
+  latitude?: string,
+  longitude?: string,
   brand?: string,
   model?: string,
-  time?: Date
+  time?: string,
+  date?: string
 }
 
 // Object Declaration & Definition Section
@@ -82,7 +88,7 @@ onMounted(() => {
 
 });
 
-// Handles Definition Part
+// Handles Definition Section
 const handleUpload = (file: any) => {
 
   let reader = new FileReader();
@@ -98,13 +104,14 @@ const handleUpload = (file: any) => {
           exposure: Math.round(1 / output.ExposureTime),
           f: output.FNumber,
           focal: output.FocalLength,
-          latitude: output.latitude,
-          longitude: output.longitude,
+          latitude: convertToDMS(output.latitude, "latitude"),
+          longitude: convertToDMS(output.longitude, "longitude"),
           brand: output.Make,
           model: output.Model,
-          time: output.DateTimeOriginal
+          date: output.GPSDateStamp.replace(/:/g, "."),
+          time: output.GPSTimeStamp
         })
-        console.log("EXIF: ", exifInfo)
+        console.log("EXIF: ", output)
       })
 
       // Render Photo & Frame
@@ -163,6 +170,13 @@ const handleExport = () => {
 
 };
 
+const handleCleanStage = () => {
+  uploader.value.clear()
+  stage.destroyChildren()
+}
+
+// Methods Definition Section
+
 const createFrameLayer = () => {
   // Create Frame Layer
   const frameLayer = new Konva.Layer()
@@ -180,11 +194,29 @@ const createFrameLayer = () => {
   frameLayer.add(frameBackground)
 }
 
-const handleCleanStage = () => {
-  uploader.value.clear()
-  stage.destroyChildren()
-}
+const convertToDMS = (value:number, type:string) => {
+  // 获取绝对值
+  const absolute = Math.abs(value);
 
+  // 计算度、分、秒
+  const degrees = Math.floor(absolute); // 整数部分作为度
+  const minutesDecimal = (absolute - degrees) * 60; // 小数部分转为分钟
+  const minutes = Math.floor(minutesDecimal); // 整数部分作为分
+  const seconds = ((minutesDecimal - minutes) * 60).toFixed(2); // 小数部分转为秒（保留两位小数）
+
+  // 确定方向
+  let direction = "";
+  if (type === "latitude") {
+    direction = value >= 0 ? "N" : "S"; // 北纬 (N) 或 南纬 (S)
+  } else if (type === "longitude") {
+    direction = value >= 0 ? "E" : "W"; // 东经 (E) 或 西经 (W)
+  } else {
+    throw new Error("无效的类型(type)，请指定 'latitude' 或 'longitude'");
+  }
+
+  // 组合度分秒字符串
+  return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+}
 
 
 
