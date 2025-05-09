@@ -6,7 +6,8 @@
     <div class="custom-panel">
       <n-space vertical>
         <n-space>
-          <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader" :show-file-list="false">
+          <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader"
+            :show-file-list="false">
             <n-button type="primary">
               上传图片
             </n-button>
@@ -17,19 +18,21 @@
 
         </n-space>
         <n-card title="EXIF" size="small">{{ JSON.stringify(exifInfo) }}</n-card>
-        <n-input placeholder="焦段" v-model:value="exifInfo.focal">
-          <template #suffix>mm</template>
-        </n-input>
-        <n-input placeholder="光圈" v-model:value="exifInfo.f">
-          <template #prefix>f/</template>
-        </n-input>
-        <n-input placeholder="曝光时间" v-model:value="exifInfo.exposure">
-          <template #prefix>1/</template>
-          <template #suffix>s</template>
-        </n-input>
-        <n-input placeholder="ISO" v-model:value="exifInfo.iso">
-          <template #prefix>ISO</template>
-        </n-input>
+        <n-flex class="paramForm">
+          <n-input placeholder="焦段" v-model:value="exifInfo.focal">
+            <template #suffix>mm</template>
+          </n-input>
+          <n-input placeholder="光圈" v-model:value="exifInfo.f">
+            <template #prefix>f/</template>
+          </n-input>
+          <n-input placeholder="曝光时间" v-model:value="exifInfo.exposure">
+            <template #prefix>1/</template>
+            <template #suffix>s</template>
+          </n-input>
+          <n-input placeholder="ISO" v-model:value="exifInfo.iso">
+            <template #prefix>ISO</template>
+          </n-input>
+        </n-flex>
       </n-space>
 
     </div>
@@ -39,7 +42,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue"
-import { NButton, NSpace, NUpload, NCard, NInput } from "naive-ui"
+import { NButton, NSpace, NUpload, NCard, NInput, NFlex } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
 
@@ -187,7 +190,7 @@ const handleCleanStage = () => {
 
 </script>
 
-<style scoped>
+<style lang=scss scoped>
 .canvas-container {
   width: 80vw;
   height: 40vw;
@@ -206,5 +209,9 @@ const handleCleanStage = () => {
 .canvas-panel {
   height: 40vw;
   width: 40vw;
+}
+
+.paramForm  .n-input{
+  flex: 128px;
 }
 </style>
