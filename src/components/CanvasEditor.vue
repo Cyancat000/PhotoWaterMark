@@ -31,12 +31,12 @@
           <n-input placeholder="ISO" v-model:value="exifInfo.iso">
             <template #prefix>ISO</template>
           </n-input>
-          <n-input placeholder="品牌" v-model:value="exifInfo.brand"/>
-          <n-input placeholder="型号" v-model:value="exifInfo.model"/>
-          <n-input placeholder="经度" v-model:value="exifInfo.longitude"/>
-          <n-input placeholder="纬度" v-model:value="exifInfo.latitude"/>
-          <n-input placeholder="日期" v-model:value="exifInfo.date"/>
-          <n-input placeholder="时间" v-model:value="exifInfo.time"/>
+          <n-input placeholder="品牌" v-model:value="exifInfo.brand" />
+          <n-input placeholder="型号" v-model:value="exifInfo.model" />
+          <n-input placeholder="经度" v-model:value="exifInfo.longitude" />
+          <n-input placeholder="纬度" v-model:value="exifInfo.latitude" />
+          <n-input placeholder="日期" v-model:value="exifInfo.date" />
+          <n-input placeholder="时间" v-model:value="exifInfo.time" />
         </n-flex>
       </n-space>
 
@@ -178,6 +178,8 @@ const handleCleanStage = () => {
 // Methods Definition Section
 
 const createFrameLayer = () => {
+  const unitLength = photo.height() * 0.01
+
   // Create Frame Layer
   const frameLayer = new Konva.Layer()
   stage.add(frameLayer)
@@ -187,14 +189,47 @@ const createFrameLayer = () => {
     x: 0,
     y: photo.y(),
     width: photo.width(),
-    height: photo.height() * 1.1,
+    height: unitLength * 110,
     fill: "white",
   })
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
+
+  // Create Text
+  const ltText = new Konva.Text({
+    x: unitLength * 4,
+    y: unitLength * 102 + photo.y(),
+    text: undefinedToBlankString(exifInfo.brand) + undefinedToBlankString(exifInfo.model),
+    fontSize: unitLength * 2.8,
+    fontStyle: "bold",
+  })
+
+  const lbText = new Konva.Text({
+    x: unitLength * 4,
+    y: unitLength * 105.6 + photo.y(),
+    text: undefinedToBlankString(exifInfo.date) + undefinedToBlankString(exifInfo.time),
+    fontSize: unitLength * 2.8,
+    fill: "#666666",
+    fontStyle: "bold",
+  })
+
+  // const rtText = new Konva.Text({
+  //   x: unitLength * 4,
+  //   y: unitLength * 105.6 + photo.y(),
+  //   text: undefinedToBlankString(exifInfo.date) + undefinedToBlankString(exifInfo.time) + undefinedToBlankString(exifInfo.date) + undefinedToBlankString(exifInfo.time),
+  //   fontSize: unitLength * 2.8,
+  //   fill: "#666666",
+  //   fontStyle: "bold",
+  // })
+
+  photo.opacity(0.5)
+
+  frameLayer.add(ltText)
+  frameLayer.add(lbText)
+
 }
 
-const convertToDMS = (value:number, type:string) => {
+const convertToDMS = (value: number, type: string) => {
   // 获取绝对值
   const absolute = Math.abs(value);
 
@@ -216,6 +251,14 @@ const convertToDMS = (value:number, type:string) => {
 
   // 组合度分秒字符串
   return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+}
+
+const undefinedToBlankString = (obj:string|undefined) => {
+  if(obj === undefined){
+    return ""
+  }else{
+    return obj
+  }
 }
 
 
@@ -243,7 +286,7 @@ const convertToDMS = (value:number, type:string) => {
   width: 40vw;
 }
 
-.paramForm  .n-input{
+.paramForm .n-input {
   flex: 128px;
 }
 </style>
