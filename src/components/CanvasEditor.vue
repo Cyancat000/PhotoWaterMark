@@ -74,6 +74,12 @@ let photoScale: number
 const exifInfo: exifInfo = reactive({})
 let uploader = ref()
 
+let textList: Array<any> = []
+// let text1: any
+// let text2: any
+// let text3: any
+// let text4: any
+
 // Main Logic Section
 
 onMounted(() => {
@@ -196,48 +202,45 @@ const createFrameLayer = () => {
   frameLayer.add(frameBackground)
 
   // Create Text
-  const ltText = new Konva.Text({
+  textList.push(new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 102 + photo.y(),
-    text: undefinedToBlankString(exifInfo.brand) + " " + undefinedToBlankString(exifInfo.model),
+    text: getFormatString('device'),
     fontSize: unitLength * 2.8,
     fontStyle: "bold",
-  })
+  }))
 
-  const lbText = new Konva.Text({
+  textList.push(new Konva.Text({
+    x: photo.width() - (unitLength * 4),
+    y: unitLength * 102 + photo.y(),
+    text: getFormatString('param'),
+    fontSize: unitLength * 2.8,
+    fontStyle: "bold",
+  }))
+  textList[1].offsetX(textList[1].getTextWidth())
+
+  textList.push(new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 105.6 + photo.y(),
-    text: undefinedToBlankString(exifInfo.date) + " " + undefinedToBlankString(exifInfo.time),
+    text: getFormatString('date'),
     fontSize: unitLength * 2.8,
     fill: "#666666",
     fontStyle: "bold",
-  })
+  }))
 
-  const rtText = new Konva.Text({
-    x: photo.width() - (unitLength * 4),
-    y: unitLength * 102 + photo.y(),
-    text: getFormatParam(),
-    fontSize: unitLength * 2.8,
-    fontStyle: "bold",
-  })
-  rtText.offsetX(rtText.getTextWidth())
-
-  const rbText = new Konva.Text({
+  textList.push(new Konva.Text({
     x: photo.width() - (unitLength * 4),
     y: unitLength * 105.6 + photo.y(),
-    text: undefinedToBlankString(exifInfo.latitude) + " " + undefinedToBlankString(exifInfo.longitude),
+    text: getFormatString('location'),
     fontSize: unitLength * 2.8,
     fill: "#666666",
     fontStyle: "bold",
-  })
-  rbText.offsetX(rbText.getTextWidth())
+  }))
+  textList[3].offsetX(textList[3].getTextWidth())
 
   photo.opacity(0.5)
 
-  frameLayer.add(ltText)
-  frameLayer.add(lbText)
-  frameLayer.add(rtText)
-  frameLayer.add(rbText)
+  textList.forEach(i=>frameLayer.add(i))
 
 }
 
@@ -265,16 +268,25 @@ const convertToDMS = (value: number, type: string) => {
   return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
 }
 
-const undefinedToBlankString = (obj:string|undefined) => {
-  if(obj === undefined){
+const undefinedToBlankString = (obj: string | undefined) => {
+  if (obj === undefined) {
     return ""
-  }else{
+  } else {
     return obj
   }
 }
 
-const getFormatParam = () => {
-  return `${undefinedToBlankString(exifInfo.focal)}mm f/${undefinedToBlankString(exifInfo.f)} ISO${undefinedToBlankString(exifInfo.iso)} 1/${undefinedToBlankString(exifInfo.exposure)}`
+const getFormatString = (type: "param" | "device" | "date" | "location") => {
+  switch (type) {
+    case "param":
+      return `${undefinedToBlankString(exifInfo.focal)}mm f/${undefinedToBlankString(exifInfo.f)} ISO${undefinedToBlankString(exifInfo.iso)} 1/${undefinedToBlankString(exifInfo.exposure)}`
+    case "device":
+      return undefinedToBlankString(exifInfo.brand) + " " + undefinedToBlankString(exifInfo.model)
+    case "date":
+      return undefinedToBlankString(exifInfo.date) + " " + undefinedToBlankString(exifInfo.time)
+    case "location":
+      return undefinedToBlankString(exifInfo.latitude) + " " + undefinedToBlankString(exifInfo.longitude)
+  }
 }
 
 
