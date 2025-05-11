@@ -180,6 +180,8 @@ const handleExport = () => {
 const handleCleanStage = () => {
   uploader.value.clear()
   stage.destroyChildren()
+  textList.length = 0
+  console.log("文本列表", textList);
 }
 
 const handleReRender = () => {
@@ -280,7 +282,7 @@ const undefinedToBlankString = (obj: string | undefined) => {
 const getFormatString = (type: textType) => {
   switch (type) {
     case "param":
-      return `${undefinedToBlankString(exifInfo.focal)}mm f/${undefinedToBlankString(exifInfo.f)} ISO${undefinedToBlankString(exifInfo.iso)} 1/${undefinedToBlankString(exifInfo.exposure)}`
+      return `${undefinedToBlankString(exifInfo.focal)}mm f/${undefinedToBlankString(exifInfo.f)} ISO${undefinedToBlankString(exifInfo.iso)} 1/${undefinedToBlankString(exifInfo.exposure)}s`
     case "device":
       return undefinedToBlankString(exifInfo.brand) + " " + undefinedToBlankString(exifInfo.model)
     case "date":
