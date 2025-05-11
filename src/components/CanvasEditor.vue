@@ -15,6 +15,9 @@
           <n-button @click="handleExport" type="primary">
             下载图片
           </n-button>
+          <n-button @click="handleReRender" type="primary">
+            保存修改
+          </n-button>
 
         </n-space>
         <n-flex class="paramForm">
@@ -179,6 +182,10 @@ const handleCleanStage = () => {
   stage.destroyChildren()
 }
 
+const handleReRender = () => {
+  setTextContent(['device', { type: 'param', align: 'right' }, 'date', { type: 'location', align: 'right' }])
+}
+
 // Methods Definition Section
 
 const createFrameLayer = () => {
@@ -199,7 +206,7 @@ const createFrameLayer = () => {
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
 
-  // Create Text
+  // Create Text Element 
   textList.push(new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 102 + photo.y(),
@@ -232,13 +239,14 @@ const createFrameLayer = () => {
 
   photo.opacity(0.5)
 
-  textList.forEach(i=>{
-    setTextContent(['device', {type:'param', align: 'right'}, 'date', {type: 'location', align: 'right'}])
+  textList.forEach(i => {
+    setTextContent(['device', { type: 'param', align: 'right' }, 'date', { type: 'location', align: 'right' }])
     frameLayer.add(i)
   })
 
 }
 
+// 转换数字经纬度为度分秒
 const convertToDMS = (value: number, type: string) => {
   // 获取绝对值
   const absolute = Math.abs(value);
@@ -265,7 +273,7 @@ const convertToDMS = (value: number, type: string) => {
 
 // 转换undefined为空字符串
 const undefinedToBlankString = (obj: string | undefined) => {
-  return obj === undefined? "" : obj
+  return obj === undefined ? "" : obj
 }
 
 // 获取所需要的格式化字符串
@@ -283,11 +291,11 @@ const getFormatString = (type: textType) => {
 }
 
 // 设置文本元素的内容与偏移
-const setTextContent = (textTypeList: Array<textType | {type: textType, align: "middle" | "right"}>) => {
-  textTypeList.forEach((item, index)=>{
-    if(typeof(item) === 'string'){
+const setTextContent = (textTypeList: Array<textType | { type: textType, align: "middle" | "right" }>) => {
+  textTypeList.forEach((item, index) => {
+    if (typeof (item) === 'string') {
       textList[index].text(getFormatString(item))
-    }else{
+    } else {
       textList[index].text(getFormatString(item.type))
       textList[index].offsetX(textList[index].getTextWidth())
     }
