@@ -199,7 +199,7 @@ const createFrameLayer = () => {
   const ltText = new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 102 + photo.y(),
-    text: undefinedToBlankString(exifInfo.brand) + undefinedToBlankString(exifInfo.model),
+    text: undefinedToBlankString(exifInfo.brand) + " " + undefinedToBlankString(exifInfo.model),
     fontSize: unitLength * 2.8,
     fontStyle: "bold",
   })
@@ -207,25 +207,37 @@ const createFrameLayer = () => {
   const lbText = new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 105.6 + photo.y(),
-    text: undefinedToBlankString(exifInfo.date) + undefinedToBlankString(exifInfo.time),
+    text: undefinedToBlankString(exifInfo.date) + " " + undefinedToBlankString(exifInfo.time),
     fontSize: unitLength * 2.8,
     fill: "#666666",
     fontStyle: "bold",
   })
 
-  // const rtText = new Konva.Text({
-  //   x: unitLength * 4,
-  //   y: unitLength * 105.6 + photo.y(),
-  //   text: undefinedToBlankString(exifInfo.date) + undefinedToBlankString(exifInfo.time) + undefinedToBlankString(exifInfo.date) + undefinedToBlankString(exifInfo.time),
-  //   fontSize: unitLength * 2.8,
-  //   fill: "#666666",
-  //   fontStyle: "bold",
-  // })
+  const rtText = new Konva.Text({
+    x: photo.width() - (unitLength * 4),
+    y: unitLength * 102 + photo.y(),
+    text: getFormatParam(),
+    fontSize: unitLength * 2.8,
+    fontStyle: "bold",
+  })
+  rtText.offsetX(rtText.getTextWidth())
+
+  const rbText = new Konva.Text({
+    x: photo.width() - (unitLength * 4),
+    y: unitLength * 105.6 + photo.y(),
+    text: undefinedToBlankString(exifInfo.latitude) + " " + undefinedToBlankString(exifInfo.longitude),
+    fontSize: unitLength * 2.8,
+    fill: "#666666",
+    fontStyle: "bold",
+  })
+  rbText.offsetX(rbText.getTextWidth())
 
   photo.opacity(0.5)
 
   frameLayer.add(ltText)
   frameLayer.add(lbText)
+  frameLayer.add(rtText)
+  frameLayer.add(rbText)
 
 }
 
@@ -259,6 +271,10 @@ const undefinedToBlankString = (obj:string|undefined) => {
   }else{
     return obj
   }
+}
+
+const getFormatParam = () => {
+  return `${undefinedToBlankString(exifInfo.focal)}mm f/${undefinedToBlankString(exifInfo.f)} ISO${undefinedToBlankString(exifInfo.iso)} 1/${undefinedToBlankString(exifInfo.exposure)}`
 }
 
 
