@@ -66,6 +66,8 @@ interface exifInfo {
   date?: string
 }
 
+type textType = 'device' | 'param' | 'date' | 'location'
+
 // Object Declaration & Definition Section
 let stage: any
 let photo: any
@@ -75,10 +77,6 @@ const exifInfo: exifInfo = reactive({})
 let uploader = ref()
 
 let textList: Array<any> = []
-// let text1: any
-// let text2: any
-// let text3: any
-// let text4: any
 
 // Main Logic Section
 
@@ -205,7 +203,6 @@ const createFrameLayer = () => {
   textList.push(new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 102 + photo.y(),
-    text: getFormatString('device'),
     fontSize: unitLength * 2.8,
     fontStyle: "bold",
   }))
@@ -213,16 +210,13 @@ const createFrameLayer = () => {
   textList.push(new Konva.Text({
     x: photo.width() - (unitLength * 4),
     y: unitLength * 102 + photo.y(),
-    text: getFormatString('param'),
     fontSize: unitLength * 2.8,
     fontStyle: "bold",
   }))
-  textList[1].offsetX(textList[1].getTextWidth())
 
   textList.push(new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 105.6 + photo.y(),
-    text: getFormatString('date'),
     fontSize: unitLength * 2.8,
     fill: "#666666",
     fontStyle: "bold",
@@ -231,16 +225,17 @@ const createFrameLayer = () => {
   textList.push(new Konva.Text({
     x: photo.width() - (unitLength * 4),
     y: unitLength * 105.6 + photo.y(),
-    text: getFormatString('location'),
     fontSize: unitLength * 2.8,
     fill: "#666666",
     fontStyle: "bold",
   }))
-  textList[3].offsetX(textList[3].getTextWidth())
 
   photo.opacity(0.5)
 
-  textList.forEach(i=>frameLayer.add(i))
+  textList.forEach(i=>{
+    setTextContent(['device', {type:'param', align: 'right'}, 'date', {type: 'location', align: 'right'}])
+    frameLayer.add(i)
+  })
 
 }
 
@@ -268,15 +263,13 @@ const convertToDMS = (value: number, type: string) => {
   return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
 }
 
+// 转换undefined为空字符串
 const undefinedToBlankString = (obj: string | undefined) => {
-  if (obj === undefined) {
-    return ""
-  } else {
-    return obj
-  }
+  return obj === undefined? "" : obj
 }
 
-const getFormatString = (type: "param" | "device" | "date" | "location") => {
+// 获取所需要的格式化字符串
+const getFormatString = (type: textType) => {
   switch (type) {
     case "param":
       return `${undefinedToBlankString(exifInfo.focal)}mm f/${undefinedToBlankString(exifInfo.f)} ISO${undefinedToBlankString(exifInfo.iso)} 1/${undefinedToBlankString(exifInfo.exposure)}`
@@ -287,6 +280,18 @@ const getFormatString = (type: "param" | "device" | "date" | "location") => {
     case "location":
       return undefinedToBlankString(exifInfo.latitude) + " " + undefinedToBlankString(exifInfo.longitude)
   }
+}
+
+// 设置文本元素的内容与偏移
+const setTextContent = (textTypeList: Array<textType | {type: textType, align: "middle" | "right"}>) => {
+  textTypeList.forEach((item, index)=>{
+    if(typeof(item) === 'string'){
+      textList[index].text(getFormatString(item))
+    }else{
+      textList[index].text(getFormatString(item.type))
+      textList[index].offsetX(textList[index].getTextWidth())
+    }
+  })
 }
 
 
