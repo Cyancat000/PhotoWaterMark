@@ -15,7 +15,7 @@
           <n-button @click="handleExport" type="primary">
             下载图片
           </n-button>
-          <n-button @click="handleReRender" type="primary">
+          <n-button @click="handleReRenderText" type="primary">
             保存修改
           </n-button>
 
@@ -41,6 +41,7 @@
           <n-input placeholder="日期" v-model:value="exifInfo.date" />
           <n-input placeholder="时间" v-model:value="exifInfo.time" />
         </n-flex>
+        <n-select placeholder="选择LOGO" v-model:value="logoSrc" :options="logoList" @update:value="handleReRenderLogo()" />
       </n-space>
 
     </div>
@@ -50,7 +51,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue"
-import { NButton, NSpace, NUpload, NInput, NFlex } from "naive-ui"
+import { NButton, NSpace, NUpload, NInput, NFlex, NSelect } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
 
@@ -78,8 +79,45 @@ let canvasLimit: number = document.documentElement.clientWidth * 0.4
 let photoScale: number
 const exifInfo: exifInfo = reactive({})
 let uploader = ref()
-
 let textList: Array<any> = []
+let logo: any
+let logoProxyImage: HTMLImageElement = new Image()
+
+const logoList = [
+  {label: "Alpha(索尼)", value: "/src/images/Alpha.svg"},
+  {label: "Aquos(夏普)", value: "/src/images/Aquos.svg"},
+  {label: "ARRI(阿莱)", value: "/src/images/ARRI.svg"},
+  {label: "Canon(佳能)", value: "/src/images/Canon.svg"},
+  {label: "Casio(卡西欧)", value: "/src/images/Casio.svg"},
+  {label: "Fujifilm(富士)", value: "/src/images/Fujifilm.svg"},
+  {label: "Hasselblad(哈苏)", value: "/src/images/Hasselblad.svg"},
+  {label: "Huawei(华为)", value: "/src/images/Huawei.svg"},
+  {label: "Kodak(柯达)", value: "/src/images/Kodak.svg"},
+  {label: "Konica(柯尼卡)", value: "/src/images/Konica.svg"},
+  {label: "Leica(徕卡)", value: "/src/images/Leica.svg"},
+  {label: "Lumix(松下)", value: "/src/images/Lumix.svg"},
+  {label: "Minota(美能达)", value: "/src/images/Minota.svg"},
+  {label: "Nikon(尼康)", value: "/src/images/Nikon.svg"},
+  {label: "Olympus(奥林巴斯)", value: "/src/images/Olympus.svg"},
+  {label: "OPPO", value: "/src/images/OPPO.svg"},
+  {label: "Panasonic(松下)", value: "/src/images/Panasonic.svg"},
+  {label: "Pentax(宾得)", value: "/src/images/Pentax.svg"},
+  {label: "Phase One(飞思)", value: "/src/images/Phase_One.svg"},
+  {label: "Pixii", value: "/src/images/Pixii.svg"},
+  {label: "RED", value: "/src/images/RED.svg"},
+  {label: "Ricoh(理光)", value: "/src/images/Ricoh.svg"},
+  {label: "Samsung(三星)", value: "/src/images/Samsung.svg"},
+  {label: "Sharp(夏普)", value: "/src/images/Sharp.svg"},
+  {label: "Sigma(适马)", value: "/src/images/Sigma.svg"},
+  {label: "Sony(索尼)", value: "/src/images/Sony.svg"},
+  {label: "VIVO", value: "/src/images/VIVO.svg"},
+  {label: "Xiaomi(小米)", value: "/src/images/Xiaomi.svg"},
+  {label: "Xperia(索尼)", value: "/src/images/Xperia.svg"},
+  {label: "YI(小蚁)", value: "/src/images/YI.svg"},
+  {label: "Zeiss(蔡司)", value: "/src/images/Zeiss.svg"},
+]
+
+let logoSrc = ref("/src/images/Leica.svg")
 
 // Main Logic Section
 
@@ -134,8 +172,6 @@ const handleUpload = (file: any) => {
           x: 0,
           y: 0,
           image: img,
-          width: 50,
-          height: 50
         });
         photoLayer.add(photo);
 
@@ -148,6 +184,8 @@ const handleUpload = (file: any) => {
         // 居中照片
         photo.move({ x: (canvasLimit / photoScale - img.naturalWidth) / 2, y: (canvasLimit / photoScale - img.naturalHeight) / 2 })
         console.log("舞台宽高: ", stage.width(), stage.height())
+
+
         createFrameLayerNo1()
       }
       img.src = reader.result
@@ -183,8 +221,12 @@ const handleCleanStage = () => {
   textList.length = 0
 }
 
-const handleReRender = () => {
+const handleReRenderText = () => {
   setTextContent(['device', { type: 'param', align: 'right' }, 'date', { type: 'location', align: 'right' }])
+}
+
+const handleReRenderLogo = () => {
+  logoProxyImage.src = logoSrc.value
 }
 
 // Methods Definition Section
@@ -239,7 +281,7 @@ const createFrameLayerNo1 = () => {
     fontStyle: "bold",
   }))
 
-  photo.opacity(0.5)
+  // photo.opacity(0.5)
 
   // 传参并渲染文本
   textList.forEach(i => {
@@ -247,6 +289,35 @@ const createFrameLayerNo1 = () => {
     frameLayer.add(i)
   })
 
+  // 创建Logo分割线
+  const splitLine = new Konva.Rect({
+    x: photo.width() - Math.max(textList[1].getTextWidth(), textList[3].getTextWidth()) - unitLength * 7,
+    y: textList[0].y(),
+    width: unitLength * 0.3,
+    height: unitLength * 6,
+    fill: "#BBBBBB"
+  })
+  frameLayer.add(splitLine)
+
+  // 创建Logo对象
+  logoProxyImage.onload = () => {
+    if (logo === undefined) {
+      logo = new Konva.Image({
+        x: photo.width() - (unitLength * 10) - textList[3].getTextWidth(),
+        y: unitLength * 102 + photo.y(),
+        image: logoProxyImage,
+      })
+      frameLayer.add(logo)
+    }
+    logo.height(unitLength * 6)
+    logo.width((logoProxyImage.naturalWidth / logoProxyImage.naturalHeight) * unitLength * 6)
+    logo.offsetX(logo.width())
+
+    console.log("LOGO宽高", logoProxyImage.naturalWidth, logoProxyImage.naturalHeight);
+
+    console.log("图像已载入");
+  }
+  logoProxyImage.src = logoSrc.value
 }
 
 // 转换数字经纬度为度分秒
