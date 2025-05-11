@@ -148,7 +148,7 @@ const handleUpload = (file: any) => {
         // 居中照片
         photo.move({ x: (canvasLimit / photoScale - img.naturalWidth) / 2, y: (canvasLimit / photoScale - img.naturalHeight) / 2 })
         console.log("舞台宽高: ", stage.width(), stage.height())
-        createFrameLayer()
+        createFrameLayerNo1()
       }
       img.src = reader.result
 
@@ -181,7 +181,6 @@ const handleCleanStage = () => {
   uploader.value.clear()
   stage.destroyChildren()
   textList.length = 0
-  console.log("文本列表", textList);
 }
 
 const handleReRender = () => {
@@ -190,7 +189,8 @@ const handleReRender = () => {
 
 // Methods Definition Section
 
-const createFrameLayer = () => {
+// 相框样式1号
+const createFrameLayerNo1 = () => {
   const unitLength = photo.height() * 0.01
 
   // Create Frame Layer
@@ -208,7 +208,7 @@ const createFrameLayer = () => {
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
 
-  // Create Text Element 
+  // Create Text Element & Set Text Style
   textList.push(new Konva.Text({
     x: unitLength * 4,
     y: unitLength * 102 + photo.y(),
@@ -241,6 +241,7 @@ const createFrameLayer = () => {
 
   photo.opacity(0.5)
 
+  // 传参并渲染文本
   textList.forEach(i => {
     setTextContent(['device', { type: 'param', align: 'right' }, 'date', { type: 'location', align: 'right' }])
     frameLayer.add(i)
