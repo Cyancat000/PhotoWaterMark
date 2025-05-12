@@ -104,7 +104,7 @@ const logoList = [
   {label: "Pentax(宾得)", value: "/src/images/Pentax.svg"},
   {label: "Phase One(飞思)", value: "/src/images/Phase_One.svg"},
   {label: "Pixii", value: "/src/images/Pixii.svg"},
-  {label: "RED", value: "/src/images/RED.svg"},
+  {label: "RED", value: "/src/images/RED.png"},
   {label: "Ricoh(理光)", value: "/src/images/Ricoh.svg"},
   {label: "Samsung(三星)", value: "/src/images/Samsung.svg"},
   {label: "Sharp(夏普)", value: "/src/images/Sharp.svg"},
@@ -113,7 +113,7 @@ const logoList = [
   {label: "VIVO", value: "/src/images/VIVO.svg"},
   {label: "Xiaomi(小米)", value: "/src/images/Xiaomi.svg"},
   {label: "Xperia(索尼)", value: "/src/images/Xperia.svg"},
-  {label: "YI(小蚁)", value: "/src/images/YI.svg"},
+  {label: "YI(小蚁)", value: "/src/images/YI.png"},
   {label: "Zeiss(蔡司)", value: "/src/images/Zeiss.svg"},
 ]
 
