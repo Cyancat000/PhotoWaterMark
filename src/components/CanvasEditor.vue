@@ -84,37 +84,37 @@ let logo: any
 let logoProxyImage: HTMLImageElement = new Image()
 
 const logoList = [
-  {label: "Alpha(索尼)", value: "/src/images/Alpha.svg"},
-  {label: "Aquos(夏普)", value: "/src/images/Aquos.svg"},
-  {label: "ARRI(阿莱)", value: "/src/images/ARRI.svg"},
-  {label: "Canon(佳能)", value: "/src/images/Canon.svg"},
-  {label: "Casio(卡西欧)", value: "/src/images/Casio.svg"},
-  {label: "Fujifilm(富士)", value: "/src/images/Fujifilm.svg"},
-  {label: "Hasselblad(哈苏)", value: "/src/images/Hasselblad.svg"},
-  {label: "Huawei(华为)", value: "/src/images/Huawei.svg"},
-  {label: "Kodak(柯达)", value: "/src/images/Kodak.svg"},
-  {label: "Konica(柯尼卡)", value: "/src/images/Konica.svg"},
-  {label: "Leica(徕卡)", value: "/src/images/Leica.svg"},
-  {label: "Lumix(松下)", value: "/src/images/Lumix.svg"},
-  {label: "Minota(美能达)", value: "/src/images/Minota.svg"},
-  {label: "Nikon(尼康)", value: "/src/images/Nikon.svg"},
-  {label: "Olympus(奥林巴斯)", value: "/src/images/Olympus.svg"},
-  {label: "OPPO", value: "/src/images/OPPO.svg"},
-  {label: "Panasonic(松下)", value: "/src/images/Panasonic.svg"},
-  {label: "Pentax(宾得)", value: "/src/images/Pentax.svg"},
-  {label: "Phase One(飞思)", value: "/src/images/Phase_One.svg"},
-  {label: "Pixii", value: "/src/images/Pixii.svg"},
-  {label: "RED", value: "/src/images/RED.png"},
-  {label: "Ricoh(理光)", value: "/src/images/Ricoh.svg"},
-  {label: "Samsung(三星)", value: "/src/images/Samsung.svg"},
-  {label: "Sharp(夏普)", value: "/src/images/Sharp.svg"},
-  {label: "Sigma(适马)", value: "/src/images/Sigma.svg"},
-  {label: "Sony(索尼)", value: "/src/images/Sony.svg"},
-  {label: "VIVO", value: "/src/images/VIVO.svg"},
-  {label: "Xiaomi(小米)", value: "/src/images/Xiaomi.svg"},
-  {label: "Xperia(索尼)", value: "/src/images/Xperia.svg"},
-  {label: "YI(小蚁)", value: "/src/images/YI.png"},
-  {label: "Zeiss(蔡司)", value: "/src/images/Zeiss.svg"},
+  { label: "Alpha(索尼)", value: "/src/images/Alpha.svg" },
+  { label: "Aquos(夏普)", value: "/src/images/Aquos.svg" },
+  { label: "ARRI(阿莱)", value: "/src/images/ARRI.svg" },
+  { label: "Canon(佳能)", value: "/src/images/Canon.svg" },
+  { label: "Casio(卡西欧)", value: "/src/images/Casio.svg" },
+  { label: "Fujifilm(富士)", value: "/src/images/Fujifilm.svg" },
+  { label: "Hasselblad(哈苏)", value: "/src/images/Hasselblad.svg" },
+  { label: "Huawei(华为)", value: "/src/images/Huawei.svg" },
+  { label: "Kodak(柯达)", value: "/src/images/Kodak.svg" },
+  { label: "Konica(柯尼卡)", value: "/src/images/Konica.svg" },
+  { label: "Leica(徕卡)", value: "/src/images/Leica.svg" },
+  { label: "Lumix(松下)", value: "/src/images/Lumix.svg" },
+  { label: "Minota(美能达)", value: "/src/images/Minota.svg" },
+  { label: "Nikon(尼康)", value: "/src/images/Nikon.svg" },
+  { label: "Olympus(奥林巴斯)", value: "/src/images/Olympus.svg" },
+  { label: "OPPO", value: "/src/images/OPPO.svg" },
+  { label: "Panasonic(松下)", value: "/src/images/Panasonic.svg" },
+  { label: "Pentax(宾得)", value: "/src/images/Pentax.svg" },
+  { label: "Phase One(飞思)", value: "/src/images/Phase_One.svg" },
+  { label: "Pixii", value: "/src/images/Pixii.svg" },
+  { label: "RED", value: "/src/images/RED.png" },
+  { label: "Ricoh(理光)", value: "/src/images/Ricoh.svg" },
+  { label: "Samsung(三星)", value: "/src/images/Samsung.svg" },
+  { label: "Sharp(夏普)", value: "/src/images/Sharp.svg" },
+  { label: "Sigma(适马)", value: "/src/images/Sigma.svg" },
+  { label: "Sony(索尼)", value: "/src/images/Sony.svg" },
+  { label: "VIVO", value: "/src/images/VIVO.svg" },
+  { label: "Xiaomi(小米)", value: "/src/images/Xiaomi.svg" },
+  { label: "Xperia(索尼)", value: "/src/images/Xperia.svg" },
+  { label: "YI(小蚁)", value: "/src/images/YI.png" },
+  { label: "Zeiss(蔡司)", value: "/src/images/Zeiss.svg" },
 ]
 
 let logoSrc = ref("/src/images/Leica.svg")
@@ -202,8 +202,18 @@ const handleUpload = (file: any) => {
 }
 
 const handleExport = () => {
+
+  const temp = stage.find('#frame-background')[0]
+
+  console.log(photoScale)
+
   const dataURL = stage.toDataURL({
-    pixelRatio: 6
+    mimeType: "image/jpeg",
+    pixelRatio: 1 / photoScale,
+    x: temp.x() * photoScale,
+    y: temp.y() * photoScale,
+    width: temp.width() * photoScale,
+    height: temp.height() * photoScale
   });
 
   const link = document.createElement('a');
@@ -249,6 +259,7 @@ const createFrameLayerNo1 = () => {
   })
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
+  frameBackground.id('frame-background')
 
   // Create Text Element & Set Text Style
   textList.push(new Konva.Text({
