@@ -119,8 +119,6 @@ const logoList = [
 
 let logoSrc = ref("/src/images/Leica.svg")
 
-// Main Logic Section
-
 onMounted(() => {
 
   // Create Stage
@@ -291,8 +289,6 @@ const createFrameLayerNo1 = () => {
     fill: "#666666",
     fontStyle: "bold",
   }))
-
-  // photo.opacity(0.5)
 
   // 传参并渲染文本
   textList.forEach(i => {
