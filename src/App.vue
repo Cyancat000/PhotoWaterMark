@@ -9,6 +9,9 @@ import CanvasEditor from './components/CanvasEditor.vue';
 </template>
 
 <style scoped>
+body{
+  background-color: #FFFFFF;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

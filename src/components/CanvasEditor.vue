@@ -5,13 +5,13 @@
     </div>
     <div class="custom-panel">
       <n-space vertical>
-        <n-space>
-          <n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader"
-            :show-file-list="false">
-            <n-button type="primary">
-              上传图片
-            </n-button>
-          </n-upload>
+        <n-flex class="button-group" justify="space-between">
+          <div><n-upload accept="image/*" @change="handleUpload" @before-upload="handleCleanStage" ref="uploader"
+              :show-file-list="false">
+              <n-button type="primary">
+                上传图片
+              </n-button>
+            </n-upload></div>
           <n-button @click="handleExport" type="primary">
             下载图片
           </n-button>
@@ -19,7 +19,7 @@
             保存修改
           </n-button>
 
-        </n-space>
+        </n-flex>
         <n-flex class="paramForm">
           <n-input placeholder="焦段" v-model:value="exifInfo.focal">
             <template #suffix>mm</template>
@@ -391,24 +391,31 @@ const setTextContent = (textTypeList: Array<textType | { type: textType, align: 
 .canvas-container {
   width: 80vw;
   height: 40vw;
-  background: #3333;
   display: flex;
 }
 
 .custom-panel {
   width: 40vw;
   height: 40vw;
-  background-color: aquamarine;
-  padding: 10px;
+  background-color: #FAFAFA;
+  border-radius: 4px;
+  box-shadow: 1px 1px 8px -4px #666;
+  padding: 16px;
   box-sizing: border-box;
+  margin-left: 8px
 }
 
 .canvas-panel {
   height: 40vw;
   width: 40vw;
+  background: #EEE;
 }
 
 .paramForm .n-input {
   flex: 128px;
 }
+
+// .button-group>* {
+//   flex: auto;
+// }
 </style>
