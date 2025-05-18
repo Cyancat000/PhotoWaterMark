@@ -41,7 +41,8 @@
           <n-input placeholder="日期" v-model:value="exifInfo.date" />
           <n-input placeholder="时间" v-model:value="exifInfo.time" />
         </n-flex>
-        <n-select placeholder="选择LOGO" v-model:value="logoSrc" :options="logoList" @update:value="handleReRenderLogo()" />
+        <n-select placeholder="选择LOGO" v-model:value="logoSrc" :options="logoList"
+          @update:value="handleReRenderLogo()" />
       </n-space>
 
     </div>
@@ -142,19 +143,20 @@ const handleUpload = (file: any) => {
     if (typeof (reader.result) == 'string') {
       // Read Photo Exif Information
       exifr.parse(reader.result).then(output => {
+        console.log("EXIF: ", output)
         Object.assign(exifInfo, {
-          iso: output.ISO,
-          exposure: Math.round(1 / output.ExposureTime),
-          f: output.FNumber,
-          focal: output.FocalLength,
+          iso: "ISO" in output ? output.ISO : "0",
+          exposure: "ExposureTime" in output ? Math.round(1 / output.ExposureTime) : "0",
+          f: "FNumber" in output ? output.FNumber : "0",
+          focal: "FocalLength" in output ? output.FocalLength : "0",
           latitude: convertToDMS(output.latitude, "latitude"),
           longitude: convertToDMS(output.longitude, "longitude"),
-          brand: output.Make,
-          model: output.Model,
-          date: output.GPSDateStamp.replace(/:/g, "."),
-          time: output.GPSTimeStamp
+          brand: "Make" in output ? output.Make : "Brand",
+          model: "Model" in output ? output.Model : "Model",
+          date: "GPSDateStamp" in output ? output.GPSDateStamp.replace(/:/g, ".") : "2000.00.00",
+          time: "GPSTimeStamp" in output ? output.GPSTimeStamp : "00:00:00"
         })
-        console.log("EXIF: ", output)
+        console.log(exifInfo);
       })
 
       // Render Photo & Frame
@@ -329,14 +331,6 @@ const createFrameLayerNo1 = () => {
 
 // 转换数字经纬度为度分秒
 const convertToDMS = (value: number, type: string) => {
-  // 获取绝对值
-  const absolute = Math.abs(value);
-
-  // 计算度、分、秒
-  const degrees = Math.floor(absolute); // 整数部分作为度
-  const minutesDecimal = (absolute - degrees) * 60; // 小数部分转为分钟
-  const minutes = Math.floor(minutesDecimal); // 整数部分作为分
-  const seconds = ((minutesDecimal - minutes) * 60).toFixed(2); // 小数部分转为秒（保留两位小数）
 
   // 确定方向
   let direction = "";
@@ -348,8 +342,24 @@ const convertToDMS = (value: number, type: string) => {
     throw new Error("无效的类型(type)，请指定 'latitude' 或 'longitude'");
   }
 
-  // 组合度分秒字符串
-  return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+  if (isNaN(value)) {
+    return `0° 0' 0" ${direction}`
+  } else {
+    // 获取绝对值
+    const absolute = Math.abs(value);
+
+    // 计算度、分、秒
+    const degrees = Math.floor(absolute); // 整数部分作为度
+    const minutesDecimal = (absolute - degrees) * 60; // 小数部分转为分钟
+    const minutes = Math.floor(minutesDecimal); // 整数部分作为分
+    const seconds = ((minutesDecimal - minutes) * 60).toFixed(2); // 小数部分转为秒（保留两位小数）
+
+
+
+    // 组合度分秒字符串
+    return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+  }
+
 }
 
 // 转换undefined为空字符串
@@ -417,5 +427,4 @@ const setTextContent = (textTypeList: Array<textType | { type: textType, align: 
 
 // .button-group>* {
 //   flex: auto;
-// }
-</style>
+// }</style>
