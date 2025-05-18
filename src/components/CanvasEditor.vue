@@ -55,7 +55,7 @@ import { ref, reactive, onMounted } from "vue"
 import { NButton, NSpace, NUpload, NInput, NFlex, NSelect } from "naive-ui"
 import exifr from "exifr"
 import Konva from 'konva';
-
+import dayjs from 'dayjs'
 
 // Type Const
 interface exifInfo {
@@ -153,8 +153,8 @@ const handleUpload = (file: any) => {
           longitude: convertToDMS(output.longitude, "longitude"),
           brand: "Make" in output ? output.Make : "Brand",
           model: "Model" in output ? output.Model : "Model",
-          date: "GPSDateStamp" in output ? output.GPSDateStamp.replace(/:/g, ".") : "2000.00.00",
-          time: "GPSTimeStamp" in output ? output.GPSTimeStamp : "00:00:00"
+          date: "DateTimeOriginal" in output ? dayjs(output.DateTimeOriginal).format("YYYY.MM.DD") : "2000.00.00",
+          time: "DateTimeOriginal" in output ? dayjs(output.DateTimeOriginal).format("HH:mm:ss") : "00:00:00"
         })
         console.log(exifInfo);
       })
