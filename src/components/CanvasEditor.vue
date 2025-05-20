@@ -251,7 +251,7 @@ const createFrameLayerNo1 = () => {
 
   // Create Frame
   const frameBackground = new Konva.Rect({
-    x: 0,
+    x: photo.x(),
     y: photo.y(),
     width: photo.width(),
     height: unitLength * 110,
@@ -260,24 +260,32 @@ const createFrameLayerNo1 = () => {
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
   frameBackground.id('frame-background')
+  
+  if(photoScale*frameBackground.height()>stage.height()){
+    console.log("超出范围！");
+    photoScale = stage.height() / frameBackground.height()
+    stage.scale({x:photoScale,y:photoScale})
+    // console.log(photo.x(),photo.y());
+  }
+
 
   // Create Text Element & Set Text Style
   textList.push(new Konva.Text({
-    x: unitLength * 4,
+    x: unitLength * 4 + photo.x(),
     y: unitLength * 102 + photo.y(),
     fontSize: unitLength * 2.8,
     fontStyle: "bold",
   }))
 
   textList.push(new Konva.Text({
-    x: photo.width() - (unitLength * 4),
+    x: photo.width() - (unitLength * 4) + photo.x(),
     y: unitLength * 102 + photo.y(),
     fontSize: unitLength * 2.8,
     fontStyle: "bold",
   }))
 
   textList.push(new Konva.Text({
-    x: unitLength * 4,
+    x: unitLength * 4 + photo.x(),
     y: unitLength * 105.6 + photo.y(),
     fontSize: unitLength * 2.8,
     fill: "#666666",
@@ -285,7 +293,7 @@ const createFrameLayerNo1 = () => {
   }))
 
   textList.push(new Konva.Text({
-    x: photo.width() - (unitLength * 4),
+    x: photo.width() - (unitLength * 4) + photo.x(),
     y: unitLength * 105.6 + photo.y(),
     fontSize: unitLength * 2.8,
     fill: "#666666",
@@ -300,7 +308,7 @@ const createFrameLayerNo1 = () => {
 
   // 创建Logo分割线
   const splitLine = new Konva.Rect({
-    x: photo.width() - Math.max(textList[1].getTextWidth(), textList[3].getTextWidth()) - unitLength * 7,
+    x: photo.width() - Math.max(textList[1].getTextWidth(), textList[3].getTextWidth()) - unitLength * 7 + photo.x(),
     y: textList[0].y(),
     width: unitLength * 0.3,
     height: unitLength * 6,
