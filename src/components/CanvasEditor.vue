@@ -320,7 +320,7 @@ const createFrameLayerNo1 = () => {
   logoProxyImage.onload = () => {
     if (logo === undefined) {
       logo = new Konva.Image({
-        x: photo.width() - (unitLength * 10) - textList[3].getTextWidth(),
+        x: splitLine.x() - (unitLength * 2),
         y: unitLength * 102 + photo.y(),
         image: logoProxyImage,
       })
