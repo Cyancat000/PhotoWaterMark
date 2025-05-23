@@ -43,6 +43,12 @@
         </n-flex>
         <n-select placeholder="选择LOGO" v-model:value="logoSrc" :options="logoList"
           @update:value="handleReRenderLogo()" />
+        <n-flex class="button-group" justify="space-between">
+          <n-button >logo放大</n-button>
+          <n-button >logo缩小</n-button>
+          <n-button @click="handleControlLogo('size', 10)">logo左移</n-button>
+          <n-button @click="handleControlLogo('size', -10)">logo右移</n-button>
+        </n-flex>
       </n-space>
 
     </div>
@@ -239,6 +245,15 @@ const handleReRenderLogo = () => {
   logoProxyImage.src = logoSrc.value
 }
 
+const handleControlLogo = (type: "size" | "location", value: number) => {
+  switch (type) {
+    case "size": logo.x(logo.x() + value)
+      break;
+    case "location":
+      break;
+  }
+}
+
 // Methods Definition Section
 
 // 相框样式1号
@@ -260,11 +275,11 @@ const createFrameLayerNo1 = () => {
   frameLayer.moveDown()
   frameLayer.add(frameBackground)
   frameBackground.id('frame-background')
-  
-  if(photoScale*frameBackground.height()>stage.height()){
+
+  if (photoScale * frameBackground.height() > stage.height()) {
     console.log("超出范围！");
     photoScale = stage.height() / frameBackground.height()
-    stage.scale({x:photoScale,y:photoScale})
+    stage.scale({ x: photoScale, y: photoScale })
     // console.log(photo.x(),photo.y());
   }
 
@@ -400,6 +415,8 @@ const setTextContent = (textTypeList: Array<textType | { type: textType, align: 
     }
   })
 }
+
+
 
 
 
