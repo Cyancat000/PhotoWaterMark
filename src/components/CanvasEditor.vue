@@ -44,10 +44,10 @@
         <n-select placeholder="选择LOGO" v-model:value="logoSrc" :options="logoList"
           @update:value="handleReRenderLogo()" />
         <n-flex class="button-group" justify="space-between">
-          <n-button >logo放大</n-button>
-          <n-button >logo缩小</n-button>
-          <n-button @click="handleControlLogo('size', 10)">logo左移</n-button>
-          <n-button @click="handleControlLogo('size', -10)">logo右移</n-button>
+          <n-button @click="handleControlLogo('size', 0.1)">logo放大</n-button>
+          <n-button @click="handleControlLogo('size', -0.1)">logo缩小</n-button>
+          <n-button @click="handleControlLogo('location', -10)">logo左移</n-button>
+          <n-button @click="handleControlLogo('location', 10)">logo右移</n-button>
         </n-flex>
       </n-space>
 
@@ -247,9 +247,11 @@ const handleReRenderLogo = () => {
 
 const handleControlLogo = (type: "size" | "location", value: number) => {
   switch (type) {
-    case "size": logo.x(logo.x() + value)
+    case "size": 
+      logo.scaleX(logo.scaleX()+value)
+      logo.scaleY(logo.scaleY()+value)
       break;
-    case "location":
+    case "location": logo.x(logo.x() + value)
       break;
   }
 }
@@ -336,13 +338,14 @@ const createFrameLayerNo1 = () => {
     if (logo === undefined) {
       logo = new Konva.Image({
         x: splitLine.x() - (unitLength * 2),
-        y: unitLength * 102 + photo.y(),
+        y: unitLength * 105 + photo.y(),
         image: logoProxyImage,
       })
       frameLayer.add(logo)
     }
     logo.height(unitLength * 6)
     logo.width((logoProxyImage.naturalWidth / logoProxyImage.naturalHeight) * unitLength * 6)
+    logo.offsetY(logo.height()/2)
     logo.offsetX(logo.width())
 
     console.log("LOGO宽高", logoProxyImage.naturalWidth, logoProxyImage.naturalHeight);
