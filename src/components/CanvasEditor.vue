@@ -91,40 +91,40 @@ let logo: any
 let logoProxyImage: HTMLImageElement = new Image()
 
 const logoList = [
-  { label: "Alpha(索尼)", value: "/src/images/Alpha.svg" },
-  { label: "Aquos(夏普)", value: "/src/images/Aquos.svg" },
-  { label: "ARRI(阿莱)", value: "/src/images/ARRI.svg" },
-  { label: "Canon(佳能)", value: "/src/images/Canon.svg" },
-  { label: "Casio(卡西欧)", value: "/src/images/Casio.svg" },
-  { label: "Fujifilm(富士)", value: "/src/images/Fujifilm.svg" },
-  { label: "Hasselblad(哈苏)", value: "/src/images/Hasselblad.svg" },
-  { label: "Huawei(华为)", value: "/src/images/Huawei.svg" },
-  { label: "Kodak(柯达)", value: "/src/images/Kodak.svg" },
-  { label: "Konica(柯尼卡)", value: "/src/images/Konica.svg" },
-  { label: "Leica(徕卡)", value: "/src/images/Leica.svg" },
-  { label: "Lumix(松下)", value: "/src/images/Lumix.svg" },
-  { label: "Minota(美能达)", value: "/src/images/Minota.svg" },
-  { label: "Nikon(尼康)", value: "/src/images/Nikon.svg" },
-  { label: "Olympus(奥林巴斯)", value: "/src/images/Olympus.svg" },
-  { label: "OPPO", value: "/src/images/OPPO.svg" },
-  { label: "Panasonic(松下)", value: "/src/images/Panasonic.svg" },
-  { label: "Pentax(宾得)", value: "/src/images/Pentax.svg" },
-  { label: "Phase One(飞思)", value: "/src/images/Phase_One.svg" },
-  { label: "Pixii", value: "/src/images/Pixii.svg" },
-  { label: "RED", value: "/src/images/RED.png" },
-  { label: "Ricoh(理光)", value: "/src/images/Ricoh.svg" },
-  { label: "Samsung(三星)", value: "/src/images/Samsung.svg" },
-  { label: "Sharp(夏普)", value: "/src/images/Sharp.svg" },
-  { label: "Sigma(适马)", value: "/src/images/Sigma.svg" },
-  { label: "Sony(索尼)", value: "/src/images/Sony.svg" },
-  { label: "VIVO", value: "/src/images/VIVO.svg" },
-  { label: "Xiaomi(小米)", value: "/src/images/Xiaomi.svg" },
-  { label: "Xperia(索尼)", value: "/src/images/Xperia.svg" },
-  { label: "YI(小蚁)", value: "/src/images/YI.png" },
-  { label: "Zeiss(蔡司)", value: "/src/images/Zeiss.svg" },
+  { label: "Alpha(索尼)", value: "Alpha.svg" },
+  { label: "Aquos(夏普)", value: "Aquos.svg" },
+  { label: "ARRI(阿莱)", value: "ARRI.svg" },
+  { label: "Canon(佳能)", value: "Canon.svg" },
+  { label: "Casio(卡西欧)", value: "Casio.svg" },
+  { label: "Fujifilm(富士)", value: "Fujifilm.svg" },
+  { label: "Hasselblad(哈苏)", value: "Hasselblad.svg" },
+  { label: "Huawei(华为)", value: "Huawei.svg" },
+  { label: "Kodak(柯达)", value: "Kodak.svg" },
+  { label: "Konica(柯尼卡)", value: "Konica.svg" },
+  { label: "Leica(徕卡)", value: "Leica.svg" },
+  { label: "Lumix(松下)", value: "Lumix.svg" },
+  { label: "Minota(美能达)", value: "Minota.svg" },
+  { label: "Nikon(尼康)", value: "Nikon.svg" },
+  { label: "Olympus(奥林巴斯)", value: "Olympus.svg" },
+  { label: "OPPO", value: "OPPO.svg" },
+  { label: "Panasonic(松下)", value: "Panasonic.svg" },
+  { label: "Pentax(宾得)", value: "Pentax.svg" },
+  { label: "Phase One(飞思)", value: "Phase_One.svg" },
+  { label: "Pixii", value: "Pixii.svg" },
+  { label: "RED", value: "RED.png" },
+  { label: "Ricoh(理光)", value: "Ricoh.svg" },
+  { label: "Samsung(三星)", value: "Samsung.svg" },
+  { label: "Sharp(夏普)", value: "Sharp.svg" },
+  { label: "Sigma(适马)", value: "Sigma.svg" },
+  { label: "Sony(索尼)", value: "Sony.svg" },
+  { label: "VIVO", value: "VIVO.svg" },
+  { label: "Xiaomi(小米)", value: "Xiaomi.svg" },
+  { label: "Xperia(索尼)", value: "Xperia.svg" },
+  { label: "YI(小蚁)", value: "YI.png" },
+  { label: "Zeiss(蔡司)", value: "Zeiss.svg" },
 ]
 
-let logoSrc = ref("/src/images/Leica.svg")
+let logoSrc = ref("Leica.svg")
 
 onMounted(() => {
 
@@ -242,7 +242,7 @@ const handleReRenderText = () => {
 }
 
 const handleReRenderLogo = () => {
-  logoProxyImage.src = logoSrc.value
+  logoProxyImage.src = "/src/images/"+logoSrc.value
 }
 
 const handleControlLogo = (type: "size" | "location", value: number) => {
@@ -352,7 +352,7 @@ const createFrameLayerNo1 = () => {
 
     console.log("图像已载入");
   }
-  logoProxyImage.src = logoSrc.value
+  logoProxyImage.src = "/src/images/"+logoSrc.value
 }
 
 // 转换数字经纬度为度分秒
