@@ -235,6 +235,7 @@ const handleCleanStage = () => {
   uploader.value.clear()
   stage.destroyChildren()
   textList.length = 0
+  logo = undefined
 }
 
 const handleReRenderText = () => {
@@ -260,6 +261,7 @@ const handleControlLogo = (type: "size" | "location", value: number) => {
 
 // 相框样式1号
 const createFrameLayerNo1 = () => {
+
   const unitLength = photo.height() * 0.01
 
   // Create Frame Layer
@@ -282,7 +284,6 @@ const createFrameLayerNo1 = () => {
     console.log("超出范围！");
     photoScale = stage.height() / frameBackground.height()
     stage.scale({ x: photoScale, y: photoScale })
-    // console.log(photo.x(),photo.y());
   }
 
 
@@ -333,6 +334,7 @@ const createFrameLayerNo1 = () => {
   })
   frameLayer.add(splitLine)
 
+
   // 创建Logo对象
   logoProxyImage.onload = () => {
     if (logo === undefined) {
@@ -342,6 +344,8 @@ const createFrameLayerNo1 = () => {
         image: logoProxyImage,
       })
       frameLayer.add(logo)
+    }else{
+      console.log("Logo不为undefined");
     }
     logo.height(unitLength * 6)
     logo.width((logoProxyImage.naturalWidth / logoProxyImage.naturalHeight) * unitLength * 6)
